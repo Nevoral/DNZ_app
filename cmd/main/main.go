@@ -1,8 +1,8 @@
 package main
 
 import (
-	zlog "BuffetRegister/internal/logging"
-	"BuffetRegister/internal/server"
+	zlog "DNZ_app/internal/logging"
+	"DNZ_app/internal/server"
 	"fmt"
 	"github.com/joho/godotenv"
 	"os"

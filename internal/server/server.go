@@ -1,7 +1,7 @@
 package server
 
 import (
-	"BuffetRegister/internal/database"
+	"DNZ_app/internal/database"
 	"github.com/gofiber/fiber/v2"
 )
 

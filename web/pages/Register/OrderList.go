@@ -1,7 +1,7 @@
 package Register
 
 import (
-	hand "BuffetRegister/internal/handlers"
+	hand "DNZ_app/internal/handlers"
 	"fmt"
 	lx "github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"

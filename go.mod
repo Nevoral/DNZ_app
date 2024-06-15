@@ -1,4 +1,4 @@
-module BuffetRegister
+module DNZ_app
 
 go 1.22.4
 

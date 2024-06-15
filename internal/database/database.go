@@ -1,8 +1,8 @@
 package database
 
 import (
-	buf "BuffetRegister/internal/database/BuffetRegister"
-	zlog "BuffetRegister/internal/logging"
+	buf "DNZ_app/internal/database/DNZ_app"
+	zlog "DNZ_app/internal/logging"
 	"context"
 	"database/sql"
 	_ "embed"

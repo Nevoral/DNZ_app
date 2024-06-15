@@ -1,7 +1,7 @@
 package Register
 
 import (
-	reg "BuffetRegister/internal/database/BuffetRegister"
+	reg "DNZ_app/internal/database/DNZ_app"
 	"fmt"
 	"github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"

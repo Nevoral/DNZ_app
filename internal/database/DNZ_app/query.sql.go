@@ -3,7 +3,7 @@
 //   sqlc v1.26.0
 // source: query.sql
 
-package BuffetRegister
+package DNZ_app
 
 import (
 	"context"

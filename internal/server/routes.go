@@ -1,10 +1,10 @@
 package server
 
 import (
-	hand "BuffetRegister/internal/handlers"
-	zlog "BuffetRegister/internal/logging"
-	page "BuffetRegister/web/pages"
-	reg "BuffetRegister/web/pages/Register"
+	hand "DNZ_app/internal/handlers"
+	zlog "DNZ_app/internal/logging"
+	page "DNZ_app/web/pages"
+	reg "DNZ_app/web/pages/Register"
 	"bytes"
 	"context"
 	"encoding/json"

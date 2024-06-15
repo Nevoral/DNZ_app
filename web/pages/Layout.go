@@ -1,7 +1,7 @@
 package pages
 
 import (
-	"BuffetRegister/web/pages/Home"
+	"DNZ_app/web/pages/Home"
 	lx "github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"
 )

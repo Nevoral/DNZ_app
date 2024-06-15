@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.26.0
 
-package BuffetRegister
+package DNZ_app
 
 import (
 	"database/sql"
