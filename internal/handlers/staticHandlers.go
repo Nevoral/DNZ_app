@@ -4,29 +4,29 @@ import (
 	"bytes"
 	"context"
 	lx "github.com/Nevoral/LuxeGo"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"log"
 	"path/filepath"
 )
 
 const pathBase = "./web"
 
-func SendJs(c *fiber.Ctx) error {
+func SendJs(c fiber.Ctx) error {
 	filePath := filepath.Join(pathBase, "static", "js", c.Params("*"))
 	return sendFile(c, filePath)
 }
 
-func SendAsset(c *fiber.Ctx) error {
+func SendAsset(c fiber.Ctx) error {
 	filePath := filepath.Join(pathBase, "static", "assets", c.Params("*"))
 	return sendFile(c, filePath)
 }
 
-func SendCss(c *fiber.Ctx) error {
+func SendCss(c fiber.Ctx) error {
 	filePath := filepath.Join(pathBase, "static", "css", c.Params("*"))
 	return sendFile(c, filePath)
 }
 
-func sendFile(c *fiber.Ctx, path string) error {
+func sendFile(c fiber.Ctx, path string) error {
 	err := c.SendFile(path)
 	if err != nil {
 		c.Status(fiber.StatusNotFound)
@@ -35,8 +35,8 @@ func sendFile(c *fiber.Ctx, path string) error {
 	return nil
 }
 
-func SendHTML(page ...lx.Content) func(c *fiber.Ctx) error {
-	return func(c *fiber.Ctx) error {
+func SendHTML(page ...lx.Content) func(c fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		// Set the HTTP Content-Type header.
 		c.Set(fiber.HeaderContentType, fiber.MIMETextHTMLCharsetUTF8)
 

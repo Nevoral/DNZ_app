@@ -1,8 +1,8 @@
 package Register
 
 import (
-	hand "DNZ_app/internal/handlers"
 	"fmt"
+	hand "github.com/Nevoral/DNZ_app/internal/handlers"
 	lx "github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"
 )

@@ -1,9 +1,9 @@
 package main
 
 import (
-	zlog "DNZ_app/internal/logging"
-	"DNZ_app/internal/server"
 	"fmt"
+	zlog "github.com/Nevoral/DNZ_app/internal/logging"
+	"github.com/Nevoral/DNZ_app/internal/server"
 	"github.com/joho/godotenv"
 	"os"
 	"strconv"

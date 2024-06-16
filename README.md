@@ -1,1 +1,1 @@
-# DNZ_app
+# github.com/Nevoral/DNZ_app

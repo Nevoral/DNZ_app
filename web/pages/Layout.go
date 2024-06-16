@@ -1,7 +1,7 @@
 package pages
 
 import (
-	"DNZ_app/web/pages/Home"
+	"github.com/Nevoral/DNZ_app/web/pages/Home"
 	lx "github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"
 )
@@ -20,7 +20,7 @@ func Layout() []lx.Content {
 				html.Title("Buffet Kasa"),
 			),
 			html.Body(
-				Home.ProductMenuForm(),
+				Home.LandingPage(),
 			).Class("flex w-full h-full bg-gray-600 justify-center items-center"),
 		).Lang("cz"),
 	}

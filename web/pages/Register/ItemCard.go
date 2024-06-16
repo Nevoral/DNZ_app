@@ -1,8 +1,8 @@
 package Register
 
 import (
-	reg "DNZ_app/internal/database/DNZ_app"
 	"fmt"
+	reg "github.com/Nevoral/DNZ_app/internal/database/DNZ_app"
 	"github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"
 )

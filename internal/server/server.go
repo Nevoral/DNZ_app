@@ -1,13 +1,13 @@
 package server
 
 import (
-	"DNZ_app/internal/database"
-	"github.com/gofiber/fiber/v2"
+	"github.com/Nevoral/DNZ_app/internal/database"
+	"github.com/gofiber/fiber/v3"
 )
 
 type FiberServer struct {
 	*fiber.App
-	db database.Service
+	db database.DbClient
 }
 
 func New() *FiberServer {
