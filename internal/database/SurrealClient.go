@@ -22,6 +22,8 @@ var (
 	dbPort      = os.Getenv("DB_PORT")
 	dbNamespace = os.Getenv("DB_NAMESPACE")
 	dbName      = os.Getenv("DB_NAME")
+	userName    = os.Getenv("DB_USER_NAME")
+	userPass    = os.Getenv("DB_USER_PASS")
 )
 
 func New() DbClient {
@@ -31,8 +33,8 @@ func New() DbClient {
 	}
 
 	if _, err = db.Signin(map[string]interface{}{
-		"user": "root",
-		"pass": "root",
+		"user": userName,
+		"pass": userPass,
 	}); err != nil {
 		zlog.PanicLog(err.Error())
 	}
