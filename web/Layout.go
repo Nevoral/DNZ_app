@@ -1,7 +1,7 @@
-package pages
+package web
 
 import (
-	"github.com/Nevoral/DNZ_app/web/pages/Home"
+	"github.com/Nevoral/DNZ_app/web/Home"
 	lx "github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"
 )

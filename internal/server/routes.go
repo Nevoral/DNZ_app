@@ -1,21 +1,29 @@
 package server
 
 import (
+	"bytes"
+	"fmt"
+	"github.com/Nevoral/DNZ_app/internal/Authentification"
 	"github.com/Nevoral/DNZ_app/internal/database"
 	hand "github.com/Nevoral/DNZ_app/internal/handlers"
-	"github.com/Nevoral/DNZ_app/web/pages"
+	zlog "github.com/Nevoral/DNZ_app/internal/logging"
+	"github.com/Nevoral/DNZ_app/web/Home"
 	"github.com/gofiber/fiber/v3"
 	"time"
 )
 
 func (s *FiberServer) Router() {
 
-	//	s.App.Get("/js/*", hand.SendJs)
-	//	s.App.Get("/assets/*", hand.SendAsset)
-	//	s.App.Get("/css/*", hand.SendCss)
+	s.App.Get("/js/*", hand.SendJs)
+	s.App.Get("/assets", hand.SendAsset)
+	s.App.Get("/css/*", hand.SendCss)
 	//
-	s.App.Get("/", hand.SendHTML(pages.Layout()...))
+	s.App.Get("/", s.HomePage)
 	s.App.Get("/createuser", s.createUser)
+	s.App.Post("/signup", s.SignUpUser)
+	s.App.Get("/signuptab", s.SignUpTab)
+	s.App.Post("/login", s.LoginUser)
+	s.App.Get("/logintab", s.LogInTab)
 	//	s.App.Get("/food", s.FoodProductList)
 	//	s.App.Get("/drink", s.DrinkProductList)
 	//	s.App.Post("/order", s.OrderLog)
@@ -43,6 +51,96 @@ func (s *FiberServer) createUser(c fiber.Ctx) error {
 		return err
 	}
 	return c.JSON(data)
+}
+
+func (s *FiberServer) HomePage(c fiber.Ctx) error {
+	c.Set(fiber.HeaderContentType, fiber.MIMETextHTMLCharsetUTF8)
+
+	var output bytes.Buffer
+	for _, value := range Home.LandingPage() {
+		if err := value.Render(c.UserContext(), &output); err != nil {
+			zlog.ErrorLog(err.Error())
+			return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+		}
+	}
+	return c.SendStream(&output)
+}
+
+func (s *FiberServer) SignUpUser(c fiber.Ctx) error {
+	username := c.FormValue("username", "user default")
+	email := c.FormValue("email", "")
+	password := c.FormValue("password", "000000")
+
+	hashPassword, err := Authentification.GenerateHashPassword(password)
+	if err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	}
+
+	data, err := s.db.CreateUser(c.UserContext(), database.CreateUserParam{
+		Username:     username,
+		Email:        email,
+		PasswordHash: hashPassword,
+	})
+	if err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	}
+	fmt.Println(data)
+
+	var output bytes.Buffer
+	if err = Home.EmailConfirm(email).Render(c.UserContext(), &output); err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	}
+	return c.SendStream(&output)
+}
+
+func (s *FiberServer) SignUpTab(c fiber.Ctx) error {
+	var output bytes.Buffer
+	if err := Home.SignUpTab().Render(c.UserContext(), &output); err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	}
+	return c.SendStream(&output)
+}
+
+func (s *FiberServer) LoginUser(c fiber.Ctx) error {
+	email := c.FormValue("email", "")
+	//password := c.FormValue("password", "000000")
+
+	//hashPassword, err := Authentification.GenerateHashPassword(password)
+	//if err != nil {
+	//	zlog.ErrorLog(err.Error())
+	//	return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	//}
+
+	//data, err := s.db.CreateUser(c.UserContext(), database.CreateUserParam{
+	//	Username:     username,
+	//	Email:        email,
+	//	PasswordHash: hashPassword,
+	//})
+	//if err != nil {
+	//	zlog.ErrorLog(err.Error())
+	//	return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	//}
+	//fmt.Println(data)
+
+	var output bytes.Buffer
+	if err := Home.EmailConfirm(email).Render(c.UserContext(), &output); err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	}
+	return c.SendStream(&output)
+}
+
+func (s *FiberServer) LogInTab(c fiber.Ctx) error {
+	var output bytes.Buffer
+	if err := Home.LogInTab().Render(c.UserContext(), &output); err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	}
+	return c.SendStream(&output)
 }
 
 //

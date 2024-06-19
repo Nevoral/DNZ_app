@@ -2,7 +2,7 @@ package Register
 
 import (
 	"fmt"
-	reg "github.com/Nevoral/DNZ_app/internal/database/DNZ_app"
+	reg "github.com/Nevoral/DNZ_app/internal/database/"
 	"github.com/Nevoral/LuxeGo"
 	"github.com/Nevoral/LuxeGo/html"
 )

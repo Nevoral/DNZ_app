@@ -3,7 +3,7 @@ module github.com/Nevoral/DNZ_app
 go 1.22.4
 
 require (
-	github.com/Nevoral/LuxeGo v0.0.4
+	github.com/Nevoral/LuxeGo v0.0.5
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gofiber/fiber/v3 v3.0.0-beta.2
 	github.com/joho/godotenv v1.5.1

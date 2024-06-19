@@ -27,7 +27,7 @@ var (
 )
 
 func New() DbClient {
-	db, err := surrealdb.New(fmt.Sprintf("ws:%s%s/rpc", dbUrl, dbPort))
+	db, err := surrealdb.New(fmt.Sprintf("ws://%s%s/rpc", dbUrl, dbPort))
 	if err != nil {
 		zlog.PanicLog(err.Error())
 	}
