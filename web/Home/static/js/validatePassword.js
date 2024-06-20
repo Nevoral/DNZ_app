@@ -10,7 +10,7 @@ function togglePasswordVisibility() {
     }
 }
 
-function validatePassword(password, finalValidation = false) {
+function passwordValidate(password, finalValidation = false) {
     const criteria = [
         { regex: /(?=.*\d)/, message: "0-9" },
         { regex: /(?=.*[A-Z])/, message: "A-Z" },

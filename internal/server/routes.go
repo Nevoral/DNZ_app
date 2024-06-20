@@ -3,16 +3,18 @@ package server
 import (
 	"bytes"
 	"fmt"
-	"github.com/Nevoral/DNZ_app/internal/Authentification"
+	auth "github.com/Nevoral/DNZ_app/internal/Authentification"
 	"github.com/Nevoral/DNZ_app/internal/database"
 	hand "github.com/Nevoral/DNZ_app/internal/handlers"
 	zlog "github.com/Nevoral/DNZ_app/internal/logging"
 	"github.com/Nevoral/DNZ_app/web/Home"
 	"github.com/gofiber/fiber/v3"
+	"os"
 	"time"
 )
 
 func (s *FiberServer) Router() {
+	s.App.Use(auth.JWTAuthMiddleware)
 
 	s.App.Get("/js/*", hand.SendJs)
 	s.App.Get("/assets", hand.SendAsset)
@@ -57,7 +59,7 @@ func (s *FiberServer) HomePage(c fiber.Ctx) error {
 	c.Set(fiber.HeaderContentType, fiber.MIMETextHTMLCharsetUTF8)
 
 	var output bytes.Buffer
-	for _, value := range Home.LandingPage() {
+	for _, value := range Home.Page() {
 		if err := value.Render(c.UserContext(), &output); err != nil {
 			zlog.ErrorLog(err.Error())
 			return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
@@ -67,15 +69,50 @@ func (s *FiberServer) HomePage(c fiber.Ctx) error {
 }
 
 func (s *FiberServer) SignUpUser(c fiber.Ctx) error {
-	username := c.FormValue("username", "user default")
-	email := c.FormValue("email", "")
-	password := c.FormValue("password", "000000")
+	username := c.FormValue("username")
+	email := c.FormValue("email")
+	password := c.FormValue("password")
 
-	hashPassword, err := Authentification.GenerateHashPassword(password)
+	if c.FormValue("terms") != "on" {
+		err := fmt.Errorf("nebyl dán souhlas s podmínkami")
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusNotAcceptable).SendString(err.Error())
+	}
+
+	if stat, err := auth.EmailTest(email); err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(stat).SendString(err.Error())
+	}
+
+	if stat, err := auth.UsernameTest(username); err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(stat).SendString(err.Error())
+	}
+
+	if stat, err := auth.PasswordTest(password); err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(stat).SendString(err.Error())
+	}
+
+	hashPassword, err := auth.GenerateHashPassword(password)
 	if err != nil {
 		zlog.ErrorLog(err.Error())
-		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+		return c.Status(fiber.StatusInternalServerError).SendString("problem s bezpečnostním Hashem")
 	}
+
+	jwt, err := auth.GenerateToken(email, os.Getenv("JWT_KEY"), time.Now().Add(time.Hour*48))
+	if err != nil {
+		zlog.ErrorLog(err.Error())
+		return c.Status(fiber.StatusInternalServerError).SendString("problem s jwt tokenem")
+	}
+	c.Cookie(&fiber.Cookie{
+		Name:     "jwt-dnz",
+		Value:    jwt,
+		Expires:  time.Now().Add(48 * time.Hour),
+		HTTPOnly: true,
+		Secure:   false,
+		SameSite: "Strict", // Can be Lax or None as per your requirements
+	})
 
 	data, err := s.db.CreateUser(c.UserContext(), database.CreateUserParam{
 		Username:     username,
@@ -84,12 +121,15 @@ func (s *FiberServer) SignUpUser(c fiber.Ctx) error {
 	})
 	if err != nil {
 		zlog.ErrorLog(err.Error())
-		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+		return c.Status(fiber.StatusInternalServerError).SendString("chyba v databázi")
 	}
 	fmt.Println(data)
 
 	var output bytes.Buffer
-	if err = Home.EmailConfirm(email).Render(c.UserContext(), &output); err != nil {
+	if err = Home.PopupWindowCon(
+		Home.WelcomeTab(false),
+		Home.EmailConfirm(email),
+	).Render(c.UserContext(), &output); err != nil {
 		zlog.ErrorLog(err.Error())
 		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
 	}
@@ -98,7 +138,10 @@ func (s *FiberServer) SignUpUser(c fiber.Ctx) error {
 
 func (s *FiberServer) SignUpTab(c fiber.Ctx) error {
 	var output bytes.Buffer
-	if err := Home.SignUpTab().Render(c.UserContext(), &output); err != nil {
+	if err := Home.PopupWindowCon(
+		Home.AuthTab(false),
+		Home.WelcomeTab(false),
+	).Render(c.UserContext(), &output); err != nil {
 		zlog.ErrorLog(err.Error())
 		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
 	}
@@ -106,8 +149,8 @@ func (s *FiberServer) SignUpTab(c fiber.Ctx) error {
 }
 
 func (s *FiberServer) LoginUser(c fiber.Ctx) error {
-	email := c.FormValue("email", "")
-	//password := c.FormValue("password", "000000")
+	email := c.FormValue("email")
+	//password := c.FormValue("password")
 
 	//hashPassword, err := Authentification.GenerateHashPassword(password)
 	//if err != nil {
@@ -136,7 +179,10 @@ func (s *FiberServer) LoginUser(c fiber.Ctx) error {
 
 func (s *FiberServer) LogInTab(c fiber.Ctx) error {
 	var output bytes.Buffer
-	if err := Home.LogInTab().Render(c.UserContext(), &output); err != nil {
+	if err := Home.PopupWindowCon(
+		Home.WelcomeTab(true),
+		Home.AuthTab(true),
+	).Render(c.UserContext(), &output); err != nil {
 		zlog.ErrorLog(err.Error())
 		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
 	}

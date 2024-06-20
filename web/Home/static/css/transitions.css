@@ -1,0 +1,31 @@
+::backdrop {
+    backdrop-filter: blur(3px);
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+}
+
+@keyframes fade-out {
+    to { opacity: 0; }
+}
+
+@keyframes slide-from-right {
+    from { transform: translateX(90px); }
+}
+
+@keyframes slide-to-left {
+    to { transform: translateX(-90px); }
+}
+
+.slide-it {
+    view-transition-name: slide-it;
+}
+
+::view-transition-old(slide-it) {
+    animation: 180ms ease-in-out both fade-out,
+    600ms ease-in-out both slide-to-left;
+}
+::view-transition-new(slide-it) {
+    animation: 420ms ease-in-out 90ms both fade-in,
+    600ms ease-in-out both slide-from-right;

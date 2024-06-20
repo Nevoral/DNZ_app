@@ -3,6 +3,8 @@ package Authentification
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gofiber/fiber/v3"
+	"os"
 	"time"
 )
 
@@ -50,6 +52,22 @@ func ValidateToken(tokenString string, secretKey string) error {
 	}
 
 	return fmt.Errorf("invalid token")
+}
+
+func JWTAuthMiddleware(c fiber.Ctx) error {
+	cookie := c.Cookies("jwt-dnz", "def")
+	if cookie == "" {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	err := ValidateToken(cookie, os.Getenv("JWT_KEY"))
+
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	// Token is valid
+	return c.Next()
 }
 
 func TokenExpired(err error) bool {

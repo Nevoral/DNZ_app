@@ -15,5 +15,5 @@ func EmailConfirm(email string) lx.Content {
 			html.P("Pokud vám nic nepřišlo "),
 			html.A("klikněte sem.").Class("font-bold text-cyan-600 px-2"),
 		).Class("flex flex-row"),
-	).Class("flex flex-col justify-center items-center w-1/2 p-8 bg-white text-black shadow-lg rounded-lg bg-opacity-50 backdrop-blur-sm")
+	).Class("flex flex-col justify-center items-center size-full p-8 bg-white text-black shadow-lg rounded-lg")
 }

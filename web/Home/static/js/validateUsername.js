@@ -1,4 +1,4 @@
-function validateUsername(username, finalValidation = false) {
+function usernameValidate(username, finalValidation = false) {
     if (!username && finalValidation) {
         updateValidationUI('usernameMsgBox', 'usernameShadow', 'Uživatelské jméno je povinné.', false);
         return;

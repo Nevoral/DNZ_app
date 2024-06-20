@@ -1,4 +1,4 @@
-function validateEmail(email, finalValidation = false) {
+function emailValidate(email, finalValidation = false) {
     if (!email && finalValidation) {
         updateValidationUI('emailMsgBox', 'emailShadow', 'E-mail je povinný.', false);
         return;

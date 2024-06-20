@@ -1,16 +1,19 @@
-function addValidationListeners(fieldId, validateFunc) {
-    document.getElementById(fieldId).addEventListener('focus', function() {
-        if (!this.hasAttribute('data-listeners-set')) {
-            this.addEventListener('input', () => validateFunc(this.value));
-            this.addEventListener('blur', () => validateFunc(this.value, true));
-            this.setAttribute('data-listeners-set', 'true');
-        }
-    });
+function addValidationListeners(element, validateFunc) {
+    if (!element.hasAttribute('data-listeners-set')) {
+        element.addEventListener('input', () => validateFunc(element.value));
+        element.addEventListener('blur', () => validateFunc(element.value, true));
+        element.setAttribute('data-listeners-set', 'true');
+    }
 }
 
 function updateValidationUI(msgBoxId, shadowId, message, isValid) {
-    const button = document.getElementById('RegisterBTN');
+    let btnId = 'registerBtn';
     const inputTag = ["username", "email", "password"];
+    if (!document.getElementById(btnId)) {
+        btnId = 'loginBtn';
+        inputTag.shift();
+    }
+    const button = document.getElementById(btnId);
     const msgBox = document.getElementById(msgBoxId);
     const underline = document.getElementById(shadowId);
     msgBox.textContent = message;
@@ -20,22 +23,16 @@ function updateValidationUI(msgBoxId, shadowId, message, isValid) {
     if (isValid) {
         msgBox.classList.add('bg-opacity-0');
         underline.classList.add('shadow-green-500');
-        if (inputTag.filter(tag => document.getElementById(`${tag}MsgBox`).textContent !== '').length === 0 ) {
+        if (inputTag.filter(tag => document.getElementById(`${tag}MsgBox`).textContent !== '').length === 0 && document.getElementById(`terms`).checked) {
             button.removeAttribute('disabled');
-            button.classList.remove('disabled:hover:from-cyan-600/100', 'disabled:hover:to-green-600/100');
-            button.classList.add('hover:from-cyan-600/100', 'hover:to-green-600/100');
+            button.classList.add('hover:scale-105');
         }
     } else {
         msgBox.classList.add('bg-red-500', 'bg-opacity-75');
         underline.classList.add('shadow-red-500');
         if (!button.hasAttribute('disabled')) {
             button.setAttribute('disabled', 'disabled');
-            button.classList.add('disabled:hover:from-cyan-600/100', 'disabled:hover:to-green-600/100');
-            button.classList.remove('hover:from-cyan-600/100', 'hover:to-green-600/100');
+            button.classList.remove('hover:scale-105');
         }
     }
 }
-
-addValidationListeners('username', validateUsername);
-addValidationListeners('email', validateEmail);
-addValidationListeners('password', validatePassword);
